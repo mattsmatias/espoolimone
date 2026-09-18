@@ -61,7 +61,22 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.05;letter-spac
 .hdr nav a{text-decoration:none;font-size:.76rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;padding:6px 0;border-bottom:1px solid transparent;transition:border-color .3s}
 .hdr nav a:hover,.hdr nav a[aria-current="page"]{border-bottom-color:var(--lemon)}
 .wordmark{display:flex;justify-content:center;text-decoration:none;line-height:0}
-.wordmark svg{height:48px;width:auto;display:block}
+.wordmark svg{height:48px;width:auto;display:block;overflow:visible;
+ filter:drop-shadow(0 0 5px rgba(242,225,76,.35)) drop-shadow(0 0 18px rgba(242,225,76,.16));
+ transition:filter .5s var(--ease),transform .5s var(--ease);
+ animation:neonOn 1.5s steps(1,end) .2s both}
+.wordmark:hover svg{filter:drop-shadow(0 0 7px rgba(242,225,76,.6)) drop-shadow(0 0 26px rgba(242,225,76,.35)) drop-shadow(0 0 60px rgba(242,225,76,.18));transform:translateY(-1px)}
+.wordmark:active svg{transform:translateY(0) scale(.985)}
+@keyframes neonOn{
+ 0%{opacity:.12;filter:none}
+ 8%{opacity:1;filter:drop-shadow(0 0 8px rgba(242,225,76,.55))}
+ 14%{opacity:.18;filter:none}
+ 22%{opacity:1;filter:drop-shadow(0 0 10px rgba(242,225,76,.6))}
+ 28%{opacity:.35;filter:none}
+ 36%{opacity:1;filter:drop-shadow(0 0 6px rgba(242,225,76,.45))}
+ 42%{opacity:.6;filter:none}
+ 100%{opacity:1;filter:drop-shadow(0 0 5px rgba(242,225,76,.35)) drop-shadow(0 0 18px rgba(242,225,76,.16))}}
+@media (prefers-reduced-motion:reduce){.wordmark svg{animation:none}}
 .wordmark i{font-style:normal;color:var(--lemon)}
 .hdr .right{display:flex;justify-content:flex-end;align-items:center;gap:26px}
 .hdr .right .tel{text-decoration:none;font-size:.85rem;letter-spacing:.06em;color:var(--stone)}
