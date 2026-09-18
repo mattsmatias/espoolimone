@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Limone Bistro Espoo – hallintapaneeli</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--night:#0F120E;--olive:#161B14;--panel:#1A2018;--ivory:#EFEAE0;--stone:#A8A493;--line:rgba(239,234,224,.14);--lemon:#F2E14C;--red:#E0705A;--green:#8FCB82;
+--serif:"Playfair Display",Georgia,serif;--sans:"Manrope",system-ui,sans-serif;--ease:cubic-bezier(.2,.7,.1,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--night);color:var(--ivory);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--lemon)}
+h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.15}
+input,select,textarea,button{font:inherit;color:inherit}
+input,select,textarea{background:var(--night);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%;transition:border-color .2s}
+input:focus,select,textarea:focus{outline:none;border-color:var(--lemon)}
+label{display:block;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--stone);margin-bottom:7px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--lemon);background:var(--lemon);color:var(--night);font-weight:700;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;padding:12px 20px;border-radius:8px;cursor:pointer;transition:.2s}
+.btn:hover{background:#fff;border-color:#fff}
+.btn.ghost{background:transparent;color:var(--ivory);border-color:var(--line)}
+.btn.ghost:hover{background:var(--ivory);color:var(--night);border-color:var(--ivory)}
+.btn.small{padding:8px 13px;font-size:.7rem}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+/* login */
+#login{min-height:100vh;display:grid;place-items:center;padding:24px}
+#login .card{width:min(100%,380px);background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:32px}
+#login h1{font-size:1.9rem;margin-bottom:6px}
+#login p{color:var(--stone);margin-bottom:24px;font-size:.92rem}
+#login .field{margin-bottom:14px}
+
+/* app */
+header{position:sticky;top:0;z-index:10;background:rgba(15,18,14,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+.brand{font-family:var(--serif);font-size:1.3rem}
+.brand span{color:var(--lemon)}
+nav{display:flex;gap:6px;border-bottom:1px solid var(--line);background:var(--olive)}
+nav .wrap{display:flex;gap:4px;overflow-x:auto}
+nav button{background:none;border:0;border-bottom:2px solid transparent;padding:14px 16px;font-weight:600;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--stone);cursor:pointer;white-space:nowrap}
+nav button[aria-selected="true"]{color:var(--lemon);border-bottom-color:var(--lemon)}
+section.view{display:none;padding:32px 0 80px}
+section.view.active{display:block}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.head h2{font-size:1.8rem}
+.muted{color:var(--stone);font-size:.9rem}
+
+/* stats */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card .k{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--stone)}
+.card .v{font-family:var(--serif);font-size:2.1rem;margin-top:8px;line-height:1}
+.card .d{font-size:.78rem;color:var(--stone);margin-top:4px}
+.chartbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:22px}
+.bars{display:flex;align-items:flex-end;gap:3px;height:190px;margin-top:14px}
+.bars div{flex:1;background:linear-gradient(180deg,var(--lemon),rgba(242,225,76,.25));border-radius:3px 3px 0 0;min-height:2px;position:relative}
+.bars div:hover::after{content:attr(data-t);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#000;border:1px solid var(--line);padding:5px 8px;border-radius:6px;font-size:.72rem;white-space:nowrap}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:11px 8px;border-bottom:1px solid var(--line);font-size:.92rem}
+th{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--stone)}
+td:last-child,th:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.two{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+
+/* lunch */
+.toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:20px}
+.toolbar .field{min-width:150px}
+.day{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+.day h3{font-size:1.3rem;margin-bottom:12px}
+.row{display:grid;grid-template-columns:110px 1.1fr 1.7fr 90px 80px 36px;gap:8px;margin-bottom:8px;align-items:center}
+.row .del{background:none;border:1px solid var(--line);border-radius:8px;color:var(--red);cursor:pointer;height:38px}
+.rowhead{font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--stone)}
+.drop{border:1.5px dashed var(--line);border-radius:14px;padding:26px;text-align:center;color:var(--stone);margin-bottom:20px;transition:.2s;cursor:pointer}
+.drop:hover,.drop.over{border-color:var(--lemon);color:var(--ivory);background:rgba(242,225,76,.05)}
+.drop b{color:var(--ivory)}
+
+/* content */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.block{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+.block h3{font-size:1.2rem;margin-bottom:14px}
+.field{margin-bottom:12px}
+textarea{min-height:90px;resize:vertical}
+
+/* misc */
+#toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 20px;font-weight:600;opacity:0;transition:.3s;z-index:50}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#toast.err{border-color:var(--red);color:var(--red)}
+#toast.ok{border-color:var(--green)}
+.spinner{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (max-width:820px){
+ .cards{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}
+ .row{grid-template-columns:1fr 1fr;gap:6px}
+ .rowhead{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ KIRJAUTUMINEN ============ -->
+<div id="login">
+  <form class="card" id="loginForm">
+    <h1>Limone <span style="color:var(--lemon)">·</span> hallinta</h1>
+    <p>Kirjaudu sisään sähköpostilla.</p>
+    <div class="field"><label>Sähköposti</label><input type="email" id="email" required autocomplete="username"></div>
+    <div class="field"><label>Salasana</label><input type="password" id="password" required autocomplete="current-password"></div>
+    <button class="btn" style="width:100%" id="loginBtn">Kirjaudu</button>
+    <p id="loginErr" style="color:var(--red);margin-top:14px;display:none"></p>
+  </form>
+</div>
+
+<!-- ============ PANEELI ============ -->
+<div id="app" hidden>
+  <header><div class="wrap">
+    <span class="brand">Limone <span>·</span> hallintapaneeli</span>
+    <div style="display:flex;gap:10px;align-items:center">
+      <a class="btn ghost small" href="/" target="_blank" rel="noopener">Avaa sivusto</a>
+      <button class="btn ghost small" id="logout">Kirjaudu ulos</button>
+    </div>
+  </div></header>
+
+  <nav><div class="wrap">
+    <button data-view="stats" aria-selected="true">Tilastot</button>
+    <button data-view="lunch" aria-selected="false">Lounaslista</button>
+    <button data-view="content" aria-selected="false">Sisältö</button>
+  </div></nav>
+
+  <!-- ---------- TILASTOT ---------- -->
+  <section class="view active" id="view-stats"><div class="wrap">
+    <div class="head">
+      <div><h2>Kävijätilastot</h2><p class="muted">Ei evästeitä eikä IP-osoitteita. Kävijä tunnistetaan päivittäin vaihtuvalla tunnisteella.</p></div>
+      <div style="width:170px"><label>Aikaväli</label>
+        <select id="range"><option value="7">7 päivää</option><option value="30" selected>30 päivää</option><option value="90">90 päivää</option></select>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card"><div class="k">Tänään</div><div class="v" id="s-today">–</div><div class="d" id="s-today-v"></div></div>
+      <div class="card"><div class="k">Eilen</div><div class="v" id="s-yday">–</div><div class="d" id="s-yday-v"></div></div>
+      <div class="card"><div class="k">7 päivää</div><div class="v" id="s-week">–</div><div class="d" id="s-week-d"></div></div>
+      <div class="card"><div class="k">Koko jakso</div><div class="v" id="s-period">–</div><div class="d" id="s-period-v"></div></div>
+    </div>
+
+    <div class="chartbox">
+      <strong>Kävijät päivittäin</strong>
+      <div class="bars" id="chart"></div>
+    </div>
+
+    <div class="two">
+      <div class="chartbox"><strong>Suosituimmat sivut</strong>
+        <table><thead><tr><th>Sivu</th><th>Kävijät</th><th>Näytöt</th></tr></thead><tbody id="t-pages"></tbody></table>
+      </div>
+      <div class="chartbox"><strong>Laitteet</strong>
+        <table><thead><tr><th>Laite</th><th>Näytöt</th></tr></thead><tbody id="t-devices"></tbody></table>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ---------- LOUNASLISTA ---------- -->
+  <section class="view" id="view-lunch"><div class="wrap">
+    <div class="head">
+      <div><h2>Lounaslista</h2><p class="muted">Täytä käsin tai tuo Canva-kuva tai PDF, jolloin kentät täyttyvät automaattisesti.</p></div>
+      <div style="display:flex;gap:10px">
+        <button class="btn ghost" id="lunchReload">Hae tallennettu</button>
+        <button class="btn" id="lunchSave">Tallenna ja julkaise</button>
+      </div>
+    </div>
+
+    <div class="drop" id="drop">
+      <b>Tuo lounaslista tiedostosta</b><br>
+      Raahaa tähän PDF tai kuva, tai napauta ja valitse tiedosto. Tekoäly lukee annokset ja hinnat kenttiin, jotka voit tarkistaa ennen tallennusta.
+      <input type="file" id="file" accept="application/pdf,image/png,image/jpeg,image/webp" hidden>
+      <div id="dropState" style="margin-top:10px"></div>
+    </div>
+
+    <div class="toolbar">
+      <div class="field"><label>Viikon maanantai</label><input type="date" id="weekStart"></div>
+      <div class="field" style="flex:1"><label>Viikon teksti sivulla</label><input type="text" id="weekLabel" placeholder="7.9.–11.9.2026"></div>
+      <div class="field" style="min-width:120px"><label>Tila</label>
+        <select id="published"><option value="true">Julkaistu</option><option value="false">Luonnos</option></select>
+      </div>
+    </div>
+
+    <div id="days"></div>
+  </div></section>
+
+  <!-- ---------- SISÄLTÖ ---------- -->
+  <section class="view" id="view-content"><div class="wrap">
+    <div class="head">
+      <div><h2>Sivun sisältö</h2><p class="muted">Muutokset näkyvät sivustolla heti tallennuksen jälkeen.</p></div>
+      <button class="btn" id="contentSave">Tallenna</button>
+    </div>
+
+    <div class="grid2">
+      <div class="block"><h3>Etusivun yläosa</h3>
+        <div class="field"><label>Ylätekstí</label><input id="c-eyebrow"></div>
+        <div class="field"><label>Otsikko, ylärivi</label><input id="c-line1"></div>
+        <div class="field"><label>Otsikko, alarivi</label><input id="c-line2"></div>
+        <div class="field"><label>Esittelylause</label><textarea id="c-lead"></textarea></div>
+      </div>
+
+      <div class="block"><h3>Yhteystiedot</h3>
+        <div class="field"><label>Puhelin</label><input id="c-phone"></div>
+        <div class="field"><label>Osoite</label><input id="c-address"></div>
+        <div class="field"><label>Tilauslinkki</label><input id="c-order"></div>
+        <div class="field"><label>Lounasajat</label><input id="c-lunchhours"></div>
+      </div>
+
+      <div class="block"><h3>Aukioloajat</h3>
+        <div class="field"><label>Maanantai–perjantai</label><input id="c-monfri"></div>
+        <div class="field"><label>Lauantai</label><input id="c-sat"></div>
+        <div class="field"><label>Sunnuntai</label><input id="c-sun"></div>
+      </div>
+
+      <div class="block"><h3>Esittelyosio</h3>
+        <div class="field"><label>Otsikko</label><input id="c-ititle"></div>
+        <div class="field"><label>Otsikon kursiiviosa</label><input id="c-iem"></div>
+        <div class="field"><label>Leipäteksti</label><textarea id="c-ibody"></textarea></div>
+      </div>
+    </div>
+  </div></section>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+// ====== ASETUKSET: taytä nama kaksi ======
+const SUPABASE_URL = "https://PROJEKTI.supabase.co";
+const SUPABASE_ANON_KEY = "PASTE_ANON_KEY";
+// =========================================
+
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const $ = (s) => document.querySelector(s);
+const DAYS = ["Maanantai","Tiistai","Keskiviikko","Torstai","Perjantai"];
+const KINDS = ["","Pizza","Pasta","Risotto","Insalata"];
+
+function toast(msg, type = "ok") {
+  const t = $("#toast"); t.textContent = msg; t.className = "show " + type;
+  setTimeout(() => (t.className = ""), 3200);
+}
+const eur = (n) => (n == null || n === "" ? "" : Number(n).toFixed(2).replace(".", ","));
+
+/* ---------------- kirjautuminen ---------------- */
+$("#loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = $("#loginBtn"); btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+  const { error } = await sb.auth.signInWithPassword({ email: $("#email").value.trim(), password: $("#password").value });
+  btn.disabled = false; btn.textContent = "Kirjaudu";
+  if (error) { $("#loginErr").style.display = "block"; $("#loginErr").textContent = "Kirjautuminen ei onnistunut. Tarkista sähköposti ja salasana."; return; }
+  start();
+});
+$("#logout").addEventListener("click", async () => { await sb.auth.signOut(); location.reload(); });
+
+sb.auth.getSession().then(({ data }) => { if (data.session) start(); });
+
+async function start() {
+  $("#login").style.display = "none";
+  $("#app").hidden = false;
+  buildDayEditors();
+  await Promise.all([loadStats(), loadLunch(), loadContent()]);
+}
+
+/* ---------------- navigaatio ---------------- */
+document.querySelectorAll("nav button").forEach((b) =>
+  b.addEventListener("click", () => {
+    document.querySelectorAll("nav button").forEach((x) => x.setAttribute("aria-selected", x === b));
+    document.querySelectorAll(".view").forEach((v) => v.classList.toggle("active", v.id === "view-" + b.dataset.view));
+  })
+);
+
+/* ---------------- tilastot ---------------- */
+$("#range").addEventListener("change", loadStats);
+
+async function loadStats() {
+  const { data } = await sb.auth.getSession();
+  const token = data.session?.access_token;
+  const r = await fetch("/api/stats?days=" + $("#range").value, { headers: { Authorization: "Bearer " + token } });
+  if (!r.ok) { toast("Tilastoja ei saatu haettua", "err"); return; }
+  const s = await r.json();
+
+  $("#s-today").textContent = s.summary.today.visitors ?? 0;
+  $("#s-today-v").textContent = (s.summary.today.views ?? 0) + " sivunäyttöä";
+  $("#s-yday").textContent = s.summary.yesterday.visitors ?? 0;
+  $("#s-yday-v").textContent = (s.summary.yesterday.views ?? 0) + " sivunäyttöä";
+  $("#s-week").textContent = s.summary.week_visitors ?? 0;
+  const diff = s.summary.prev_week_views ? Math.round(((s.summary.week_views - s.summary.prev_week_views) / s.summary.prev_week_views) * 100) : null;
+  $("#s-week-d").textContent = diff === null ? s.summary.week_views + " sivunäyttöä" : (diff >= 0 ? "+" : "") + diff + " % edelliseen viikkoon";
+  $("#s-period").textContent = s.summary.period_visitors ?? 0;
+  $("#s-period-v").textContent = (s.summary.period_views ?? 0) + " sivunäyttöä";
+
+  const max = Math.max(1, ...s.daily.map((d) => Number(d.visitors)));
+  $("#chart").innerHTML = s.daily.map((d) => {
+    const h = Math.round((Number(d.visitors) / max) * 100);
+    const pvm = d.day.slice(8) + "." + d.day.slice(5, 7) + ".";
+    return `<div style="height:${h}%" data-t="${pvm} — ${d.visitors} kävijää, ${d.views} näyttöä"></div>`;
+  }).join("") || '<p class="muted">Ei vielä tietoja.</p>';
+
+  const nimi = (p) => (p === "/" || p === "" ? "Etusivu" : p.includes("menu") ? "Menu" : p.includes("lounas") ? "Lounas" : p);
+  $("#t-pages").innerHTML = s.pages.map((p) => `<tr><td>${nimi(p.path)}</td><td>${p.visitors}</td><td>${p.views}</td></tr>`).join("") || '<tr><td colspan="3" class="muted">Ei vielä tietoja.</td></tr>';
+  $("#t-devices").innerHTML = s.devices.map((d) => `<tr><td>${d.device}</td><td>${d.views}</td></tr>`).join("") || '<tr><td colspan="2" class="muted">Ei vielä tietoja.</td></tr>';
+}
+
+/* ---------------- lounaslista ---------------- */
+function buildDayEditors() {
+  $("#days").innerHTML = DAYS.map((d, i) => `
+    <div class="day">
+      <h3>${d}</h3>
+      <div class="row rowhead"><span>Tyyppi</span><span>Annos</span><span>Kuvaus</span><span>Hinta</span><span>L / G</span><span></span></div>
+      <div id="day-${i + 1}"></div>
+      <button class="btn ghost small" data-add="${i + 1}" style="margin-top:8px">+ Lisää annos</button>
+    </div>`).join("");
+  document.querySelectorAll("[data-add]").forEach((b) => b.addEventListener("click", () => addRow(+b.dataset.add, {})));
+}
+
+function addRow(day, it) {
+  const el = document.createElement("div");
+  el.className = "row";
+  el.innerHTML = `
+    <select class="f-kind">${KINDS.map((k) => `<option${k === (it.kind || "") ? " selected" : ""}>${k}</option>`).join("")}</select>
+    <input class="f-name" value="${(it.name || "").replace(/"/g, "&quot;")}" placeholder="Pizza Roma">
+    <input class="f-desc" value="${(it.description || "").replace(/"/g, "&quot;")}" placeholder="salami, palvikinkku, pekoni">
+    <input class="f-price" value="${it.price != null ? eur(it.price) : ""}" placeholder="11,90" inputmode="decimal">
+    <input class="f-diet" value="${it.diet || ""}" placeholder="L G">
+    <button class="del" title="Poista">✕</button>`;
+  el.querySelector(".del").addEventListener("click", () => el.remove());
+  document.getElementById("day-" + day).appendChild(el);
+}
+
+function collectLunch() {
+  const items = [];
+  for (let d = 1; d <= 5; d++) {
+    [...document.querySelectorAll(`#day-${d} .row`)].forEach((r, i) => {
+      const name = r.querySelector(".f-name").value.trim();
+      if (!name) return;
+      const price = r.querySelector(".f-price").value.replace(",", ".").trim();
+      items.push({
+        weekday: d, sort: i, kind: r.querySelector(".f-kind").value || null,
+        name, description: r.querySelector(".f-desc").value.trim() || null,
+        price: price ? Number(price) : null, diet: r.querySelector(".f-diet").value.trim() || null,
+      });
+    });
+  }
+  return items;
+}
+
+function fillLunch(days) {
+  for (let d = 1; d <= 5; d++) document.getElementById("day-" + d).innerHTML = "";
+  (days || []).forEach((day) => (day.items || []).forEach((it) => addRow(day.weekday, it)));
+}
+
+function mondayOf(d = new Date()) {
+  const x = new Date(d); const wd = (x.getDay() + 6) % 7;
+  x.setDate(x.getDate() - wd);
+  return x.toISOString().slice(0, 10);
+}
+
+async function loadLunch() {
+  if (!$("#weekStart").value) $("#weekStart").value = mondayOf();
+  const { data: week } = await sb.from("lunch_weeks").select("*").eq("week_start", $("#weekStart").value).maybeSingle();
+  if (!week) { fillLunch([]); $("#weekLabel").value = ""; return; }
+  $("#weekLabel").value = week.label || "";
+  $("#published").value = String(week.published);
+  const { data: items } = await sb.from("lunch_items").select("*").eq("week_id", week.id).order("weekday").order("sort");
+  const byDay = {};
+  (items || []).forEach((i) => { (byDay[i.weekday] ||= []).push(i); });
+  fillLunch(Object.entries(byDay).map(([weekday, items]) => ({ weekday: +weekday, items })));
+}
+$("#lunchReload").addEventListener("click", loadLunch);
+$("#weekStart").addEventListener("change", loadLunch);
+
+$("#lunchSave").addEventListener("click", async () => {
+  const btn = $("#lunchSave"); btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+  try {
+    const week_start = $("#weekStart").value || mondayOf();
+    const payload = { week_start, label: $("#weekLabel").value.trim() || null, published: $("#published").value === "true" };
+    const { data: week, error } = await sb.from("lunch_weeks").upsert(payload, { onConflict: "week_start" }).select().single();
+    if (error) throw error;
+    await sb.from("lunch_items").delete().eq("week_id", week.id);
+    const items = collectLunch().map((i) => ({ ...i, week_id: week.id }));
+    if (items.length) {
+      const { error: e2 } = await sb.from("lunch_items").insert(items);
+      if (e2) throw e2;
+    }
+    toast("Lounaslista tallennettu");
+  } catch (e) { toast("Tallennus epäonnistui: " + (e.message || e), "err"); }
+  btn.disabled = false; btn.textContent = "Tallenna ja julkaise";
+});
+
+/* ---------- tiedoston tuonti tekoälyllä ---------- */
+const drop = $("#drop"), fileInput = $("#file");
+drop.addEventListener("click", () => fileInput.click());
+["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, () => drop.classList.remove("over")));
+drop.addEventListener("drop", (e) => { e.preventDefault(); if (e.dataTransfer.files[0]) readFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener("change", () => fileInput.files[0] && readFile(fileInput.files[0]));
+
+async function readFile(file) {
+  if (file.size > 10 * 1024 * 1024) return toast("Tiedosto on liian suuri (max 10 Mt)", "err");
+  $("#dropState").innerHTML = '<span class="spinner"></span> Luetaan listaa…';
+  try {
+    const b64 = await new Promise((res, rej) => {
+      const fr = new FileReader();
+      fr.onload = () => res(String(fr.result).split(",")[1]);
+      fr.onerror = rej; fr.readAsDataURL(file);
+    });
+    const { data } = await sb.auth.getSession();
+    const r = await fetch("/api/parse-lunch", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + data.session.access_token },
+      body: JSON.stringify({ data: b64, mediaType: file.type }),
+    });
+    const out = await r.json();
+    if (!r.ok) throw new Error(out.error || "Lukeminen epäonnistui");
+    if (out.label) $("#weekLabel").value = out.label;
+    fillLunch(out.days);
+    const n = (out.days || []).reduce((a, d) => a + (d.items || []).length, 0);
+    $("#dropState").innerHTML = `Luettu ${n} annosta. <b>Tarkista tiedot ja paina Tallenna.</b>`;
+    toast("Lista luettu. Tarkista tiedot ennen tallennusta.");
+  } catch (e) {
+    $("#dropState").textContent = "";
+    toast(String(e.message || e), "err");
+  }
+}
+
+/* ---------------- sisältö ---------------- */
+const CMAP = {
+  hero: { eyebrow: "#c-eyebrow", line1: "#c-line1", line2: "#c-line2", lead: "#c-lead" },
+  info: { phone: "#c-phone", address: "#c-address", order_url: "#c-order", lunch_hours: "#c-lunchhours" },
+  hours: { mon_fri: "#c-monfri", sat: "#c-sat", sun: "#c-sun" },
+  intro: { title: "#c-ititle", title_em: "#c-iem", body: "#c-ibody" },
+};
+
+async function loadContent() {
+  const { data } = await sb.from("site_content").select("*");
+  (data || []).forEach((row) => {
+    const map = CMAP[row.key]; if (!map) return;
+    Object.entries(map).forEach(([field, sel]) => { const el = $(sel); if (el) el.value = row.value?.[field] ?? ""; });
+  });
+}
+
+$("#contentSave").addEventListener("click", async () => {
+  const btn = $("#contentSave"); btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+  try {
+    const rows = Object.entries(CMAP).map(([key, map]) => ({
+      key,
+      value: Object.fromEntries(Object.entries(map).map(([field, sel]) => [field, $(sel)?.value ?? ""])),
+    }));
+    const { error } = await sb.from("site_content").upsert(rows, { onConflict: "key" });
+    if (error) throw error;
+    toast("Sisältö tallennettu");
+  } catch (e) { toast("Tallennus epäonnistui: " + (e.message || e), "err"); }
+  btn.disabled = false; btn.textContent = "Tallenna";
+});
+</script>
+</body>
+</html>
