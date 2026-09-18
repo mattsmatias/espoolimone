@@ -10,29 +10,52 @@ echo ==========================================
 echo Kansio: %CD%
 echo.
 
-REM ---------- 1. Etsi uusin ladattu index.html ----------
+REM ---------- 1. Etsi uusin index.html automaattisesti ----------
+REM Voit myos raahata html-tiedoston taman bat-tiedoston paalle.
 set "NEW="
-set "DL1=%USERPROFILE%\Downloads"
-set "DL2=%USERPROFILE%\OneDrive\Downloads"
+set "NEWTIME=0"
 
-for /f "delims=" %%F in ('dir /b /o-d "%DL1%\index*.html" 2^>nul') do (
-    set "NEW=%DL1%\%%F"
-    goto :loytyi
-)
-for /f "delims=" %%F in ('dir /b /o-d "%DL2%\index*.html" 2^>nul') do (
-    set "NEW=%DL2%\%%F"
-    goto :loytyi
+if not "%~1"=="" (
+    if exist "%~1" (
+        set "NEW=%~1"
+        goto :kopioi
+    )
 )
 
-:loytyi
+call :etsi "%USERPROFILE%\Downloads"
+call :etsi "%USERPROFILE%\OneDrive\Downloads"
+call :etsi "%USERPROFILE%\OneDrive\Lataukset"
+call :etsi "%USERPROFILE%\Desktop"
+call :etsi "%USERPROFILE%\OneDrive\Desktop"
+call :etsi "%USERPROFILE%\OneDrive\Työpöytä"
+call :etsi "%USERPROFILE%\Documents"
+goto :kopioi
+
+:etsi
+if not exist "%~1" exit /b
+for /f "delims=" %%F in ('dir /b /a-d /o-d "%~1\index*.html" "%~1\limone*.html" 2^>nul') do (
+    for /f %%T in ('powershell -nop -c "(Get-Item -LiteralPath '%~1\%%F').LastWriteTime.ToString(\"yyyyMMddHHmmss\")" 2^>nul') do (
+        if %%T GTR !NEWTIME! (
+            set "NEWTIME=%%T"
+            set "NEW=%~1\%%F"
+        )
+    )
+)
+exit /b
+
+:kopioi
 if defined NEW (
-    echo Loytyi uusi tiedosto:
+    echo Uusin loydetty tiedosto:
     echo   !NEW!
-    copy /y "!NEW!" "index.html" >nul
-    echo Kopioitu tahan kansioon nimella index.html
+    fc /b "!NEW!" "index.html" >nul 2>nul
+    if errorlevel 1 (
+        copy /y "!NEW!" "index.html" >nul
+        echo Kopioitu kansioon nimella index.html
+    ) else (
+        echo Tiedosto on jo sama kuin kansiossa oleva index.html
+    )
 ) else (
-    echo Latauksista ei loytynyt index.html-tiedostoa.
-    echo Kaytetaan kansiossa jo olevaa index.html-tiedostoa.
+    echo Uutta tiedostoa ei loytynyt - kaytetaan kansiossa olevaa index.html
 )
 echo.
 
@@ -61,13 +84,10 @@ if not exist ".git" (
 )
 
 git remote get-url origin >nul 2>nul
-if errorlevel 1 (
-    git remote add origin https://github.com/mattsmatias/espoolimone.git
-)
+if errorlevel 1 git remote add origin https://github.com/mattsmatias/espoolimone.git
 
 REM ---------- 3. Commit ja push ----------
 git add -A
-
 git diff --cached --quiet
 if not errorlevel 1 (
     echo Ei muutoksia - kaikki on jo ajan tasalla.
